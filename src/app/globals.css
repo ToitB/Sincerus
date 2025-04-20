@@ -1,0 +1,586 @@
+/* C:\Sincerus\sincerus-art-website\src\app\globals.css */
+
+/* Define CSS Variables for the new palette */
+:root {
+    --palette-very-dark-gray: #272627;
+    --palette-light-gray-taupe: #cabebc;
+    --palette-gray: #787e82;
+    --palette-dark-blue-gray: #444b54;
+    --palette-white: #ffffff;
+
+    /* Map palette colors to semantic variables for easier use (Light Mode) */
+    --color-primary-accent: var(--palette-light-gray-taupe); /* Light accent/highlight */
+    --color-secondary-accent: var(--palette-gray); /* Mid-tone gray, secondary elements */
+    --color-text-primary: var(--palette-very-dark-gray); /* Main text color */
+    --color-text-secondary: var(--palette-gray); /* Secondary text/borders */
+    --color-background-primary: var(--palette-white); /* Main light background */
+    --color-background-secondary: var(--palette-light-gray-taupe); /* For light gradient/subtle backgrounds */
+    --color-border: var(--palette-gray); /* General border color */
+    --color-active-state: var(--palette-gray); /* Active state color */
+}
+
+body.dark {
+    /* Map palette colors for semantic variables (Dark Mode) */
+    --color-primary-accent: var(--palette-light-gray-taupe); /* Light accent/highlight */
+    --color-secondary-accent: var(--palette-gray); /* Mid-tone gray, secondary elements */
+    --color-text-primary: var(--palette-white); /* Main text color in dark mode */
+    --color-text-secondary: var(--palette-gray); /* Secondary text/borders */
+    --color-background-primary: var(--palette-dark-blue-gray); /* Main dark background */
+    --color-background-secondary: var(--palette-very-dark-gray); /* Darker background/gradient base */
+    --color-border: var(--palette-gray); /* General border color */
+    --color-active-state: var(--palette-gray); /* Active state color */
+}
+
+
+/* Basic Reset and Global Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+      Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    line-height: 1.6;
+    color: var(--color-text-primary); /* Light Mode Text */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--color-background-primary), var(--color-background-secondary), var(--color-background-primary)); /* Light Mode Gradient */
+    background-size: 800% 800%;
+    animation: gradientAnimationLight 30s ease infinite;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+@keyframes gradientAnimationLight {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
+}
+
+/* --- Dark Mode Styles --- */
+body.dark {
+    color: var(--color-text-primary); /* Dark Mode Text */
+    background: linear-gradient(-45deg, var(--color-background-primary), var(--color-background-secondary), var(--color-background-primary)); /* Dark Mode Gradient */
+    background-size: 600% 600%;
+    animation: gradientAnimationDark 25s ease infinite;
+}
+
+@keyframes gradientAnimationDark {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+body.dark a { color: var(--color-text-primary); }
+body.dark a:hover { color: var(--color-text-secondary); } /* Slightly darker gray on hover */
+body.dark .site-header {
+    background-color: var(--color-background-primary); /* Darker header background */
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+body.dark .site-nav .site-title { color: var(--color-primary-accent); } /* Accent color for dark mode title */
+body.dark .site-nav .site-title:hover { color: var(--color-secondary-accent); } /* Primary accent on hover */
+body.dark .nav-links a { color: var(--color-text-primary); } /* Dark mode nav link color */
+body.dark .nav-links a::after { background-color: var(--color-secondary-accent); } /* Dark mode underline color */
+body.dark .nav-links a:active::after { background-color: var(--color-primary-accent); } /* Dark mode active underline */
+body.dark .menu-toggle .hamburger-line { background-color: var(--color-text-primary); } /* Lighter hamburger lines */
+body.dark .gallery-item,
+body.dark .contact-form {
+    background-color: var(--color-background-primary); /* Darker background for cards/forms */
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+}
+body.dark .artwork-title,
+body.dark .form-group label { color: var(--color-primary-accent); } /* Adjust title/label color */
+body.dark .form-group input[type="text"],
+body.dark input[type="email"],
+body.dark textarea {
+    background-color: var(--color-background-secondary); /* Darker input background */
+    border-color: var(--color-border); /* Adjust border color */
+    color: var(--color-text-primary); /* Lighter text in inputs */
+}
+body.dark .submit-button {
+    background-color: var(--color-secondary-accent); /* Adjust button color */
+    color: var(--color-text-primary);
+}
+body.dark .submit-button:hover { background-color: var(--color-primary-accent); }
+body.dark .submit-button:active { background-color: var(--color-active-state); }
+
+
+body.dark .site-footer {
+    background-color: var(--color-background-primary); /* Darker footer background */
+    color: var(--color-text-primary); /* Lighter footer text */
+}
+body.dark .social-links a { color: var(--color-text-primary); } /* Adjust social icon color */
+body.dark .social-links a:hover {
+    color: var(--color-text-secondary);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+body.dark .social-links a:active { background-color: rgba(255, 255, 255, 0.2); }
+body.dark .social-links a:hover .social-icon {
+    stroke: var(--color-text-secondary);
+    fill: var(--color-text-secondary);
+}
+body.dark .social-links a:active .social-icon {
+    stroke: var(--color-text-primary);
+    fill: var(--color-text-primary);
+}
+/* --- End Dark Mode Styles --- */
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.1s ease, opacity 0.3s ease;
+}
+a:hover { color: var(--color-primary-accent); } /* Default hover color */
+a:active {
+    transform: scale(0.98);
+    opacity: 0.8;
+}
+
+* { box-sizing: border-box; }
+
+/* Layout Styling */
+.site-header {
+  background-color: var(--color-background-primary); /* Background for header */
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.site-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.site-nav .logo {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.site-nav .site-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-text-primary); /* Title color */
+  transition: color 0.3s ease, transform 0.1s ease;
+  display: inline-block;
+}
+.site-nav .site-title:hover {
+    color: var(--color-primary-accent); /* Accent color on hover */
+    transform: scale(1.05);
+}
+.site-nav .site-title:active { transform: scale(0.95); }
+
+/* --- Mobile Menu Styling --- */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 10;
+}
+.hamburger-line {
+    width: 100%;
+    height: 3px;
+    background-color: var(--color-text-primary); /* Color of the hamburger lines */
+    border-radius: 10px;
+    transition: all 0.3s linear;
+    position: relative;
+    transform-origin: 1px;
+}
+.menu-toggle.open .hamburger-line:nth-child(1) { transform: rotate(45deg); }
+.menu-toggle.open .hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: translateX(10px);
+}
+.menu-toggle.open .hamburger-line:nth-child(3) { transform: rotate(-45deg); }
+
+/* Navigation Links - Default (Desktop) */
+.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  transition: all 0.3s ease-in-out;
+}
+.nav-links li { margin-left: 20px; }
+.nav-links a {
+  font-size: 1rem;
+  color: var(--color-text-primary); /* Link color */
+  position: relative;
+}
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-primary-accent); /* Underline color */
+    transition: width 0.3s ease;
+}
+.nav-links a:hover::after { width: 100%; }
+.nav-links a:active::after { background-color: var(--color-active-state); } /* Change underline color when active */
+
+/* --- Media Query for Mobile Styles --- */
+@media (max-width: 768px) {
+    .site-nav { justify-content: space-between; }
+    .site-nav .logo { margin-right: 0; }
+    .menu-toggle { display: flex; }
+    .nav-links {
+        position: absolute;
+        right: 0;
+        top: 60px;
+        height: calc(100vh - 60px);
+        width: 70%;
+        background-color: var(--color-background-primary); /* Background for the mobile menu */
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+    }
+    .nav-links.open { transform: translateX(0); }
+    .nav-links li { margin: 15px 0; }
+    .nav-links a { font-size: 1.2rem; }
+    .nav-links a::after { bottom: -2px; }
+}
+
+.site-main {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 20px;
+  flex-grow: 1;
+}
+
+.site-footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  background-color: var(--color-background-secondary); /* Background for footer */
+  color: var(--color-text-secondary); /* Text color for footer */
+  font-size: 0.9rem;
+}
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.social-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    display: flex;
+    gap: 15px;
+}
+.social-links a {
+    color: var(--color-text-secondary); /* Color for social links */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 50%;
+    transition: color 0.3s ease, transform 0.1s ease, opacity 0.3s ease, background-color 0.3s ease;
+}
+.social-links a:hover {
+    color: var(--color-primary-accent); /* Change icon color on hover */
+    background-color: rgba(var(--palette-light-gray-taupe-rgb), 0.1); /* Subtle background highlight on hover (based on primary accent) */
+    transform: translateY(-3px);
+}
+.social-links a:active {
+    transform: scale(0.9);
+    background-color: rgba(var(--palette-light-gray-taupe-rgb), 0.2); /* Darker background on active */
+}
+.social-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+    transition: stroke 0.3s ease, fill 0.3s ease;
+}
+.social-links a:hover .social-icon {
+    stroke: var(--color-primary-accent);
+    fill: var(--color-primary-accent);
+}
+body.dark .social-links a:hover .social-icon {
+    stroke: var(--color-secondary-accent);
+    fill: var(--color-secondary-accent);
+}
+.social-links a:active .social-icon {
+     stroke: var(--color-active-state);
+     fill: var(--color-active-state);
+}
+body.dark .social-links a:active .social-icon {
+     stroke: var(--color-active-state);
+     fill: var(--color-active-state);
+}
+
+/* Gallery Styling */
+.gallery-section {
+    padding: 20px 0;
+    text-align: center;
+}
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+.gallery-item {
+    background-color: var(--color-background-primary); /* Background for each item */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+body.dark .gallery-item {
+    background-color: var(--color-background-primary); /* Darker background for cards */
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+}
+body.dark .gallery-item:hover {
+    box-shadow: 0 8px 15px rgba(255, 255, 255, 0.2);
+}
+.gallery-item:active {
+    transform: translateY(-2px) scale(0.98);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+.gallery-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+.artwork-title {
+    font-size: 1.1rem;
+    margin: 15px 10px 10px 10px;
+    color: var(--color-text-primary); /* Title color */
+}
+body.dark .artwork-title { color: var(--color-primary-accent); } /* Adjust title color in dark mode */
+
+/* Contact Form Styling */
+.contact-section {
+    padding: 20px 0;
+    text-align: center;
+}
+.contact-form {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: var(--color-background-primary); /* Background for the form */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+body.dark .contact-form {
+    background-color: var(--color-background-primary); /* Darker background for form */
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--color-text-primary); /* Label color */
+}
+body.dark .form-group label { color: var(--color-primary-accent); } /* Adjust label color in dark mode */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 4px;
+    font-size: 1rem;
+}
+body.dark .form-group input[type="text"],
+body.dark input[type="email"],
+body.dark textarea {
+    background-color: var(--color-background-secondary); /* Darker input background */
+    border-color: var(--color-border); /* Adjust border color */
+    color: var(--color-text-primary); /* Text in inputs */
+}
+.submit-button {
+    display: inline-block;
+    background-color: var(--color-text-primary); /* Button background */
+    color: var(--color-background-primary); /* Button text */
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    position: relative;
+    overflow: hidden;
+}
+body.dark .submit-button {
+    background-color: var(--color-secondary-accent); /* Adjust button color in dark mode */
+    color: var(--color-text-primary);
+}
+.submit-button:hover { background-color: var(--color-primary-accent); } /* Accent on hover */
+body.dark .submit-button:hover { background-color: var(--color-primary-accent); } /* Darker accent on hover in dark mode */
+.submit-button:active {
+    transform: scale(0.98);
+    background-color: var(--color-active-state); /* Even darker color when active */
+}
+body.dark .submit-button:active { background-color: var(--color-active-state); } /* Even darker on active in dark mode */
+.submit-button:focus {
+    outline: 2px solid var(--color-primary-accent);
+    outline-offset: 2px;
+}
+
+/* --- Theme Toggle Button Styling --- */
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 20px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.theme-toggle:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
+}
+.theme-toggle:active {
+    transform: scale(0.95);
+    opacity: 0.7;
+}
+@media (max-width: 768px) {
+    .theme-toggle { margin-left: 0; }
+}
+
+/* --- Home Page Specific Styles --- */
+.hero-section {
+    text-align: center;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.hero-section .logo-banner {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-background-primary); /* Background for the banner */
+    height: 120px; /* Set a fixed height for the banner */
+    margin-bottom: 30px;
+    border: 1px solid var(--color-primary-accent); /* Temporary border (now using palette color) */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Vertically center content */
+    padding: 0; /* Removed padding to simplify height calculation */
+}
+
+/* Added style for the logo container to take full height within the banner */
+.hero-section .logo-banner .company-logo {
+    height: 100%; /* Make logo container take full height of banner */
+    width: 100%; /* Make logo container take full width of banner */
+    display: flex; /* Use flexbox to center the image inside */
+    justify-content: center;
+    align-items: center;
+}
+
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Modify .home-page-logo for size and centering within the banner */
+.hero-section .logo-banner .company-logo .home-page-logo {
+    display: block;
+    margin: 0 auto;
+    max-height: 100%; /* Set max-height to 100% of parent (.company-logo) */
+    max-width: 100%; /* Set max-width to 100% of parent (.company-logo) */
+    width: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Ensure the image fits without distortion */
+    opacity: 1;
+    box-shadow: none;
+    transition: none;
+}
+
+.hero-content h1 {
+    font-size: 2.5rem;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--color-text-primary); /* Headline color */
+}
+body.dark .hero-content h1 { color: var(--color-primary-accent); } /* Adjust headline color in dark mode */
+
+.hero-content .tagline {
+    font-size: 1.2rem;
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: var(--color-text-secondary); /* Tagline color */
+}
+body.dark .hero-content .tagline { color: var(--color-text-secondary); } /* Adjust tagline color in dark mode */
+
+.cta-button {
+    display: inline-block;
+    background-color: var(--color-primary-accent); /* Accent color background */
+    color: var(--color-text-primary); /* Button text */
+    padding: 12px 24px;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+body.dark .cta-button {
+       background-color: var(--color-secondary-accent); /* Adjust button color in dark mode */
+       color: var(--color-text-primary);
+}
+.cta-button:hover { background-color: var(--color-secondary-accent); } /* Accent on hover */
+body.dark .cta-button:hover { background-color: var(--color-primary-accent); } /* Darker accent on hover in dark mode */
+.cta-button:active {
+    transform: scale(0.98);
+    background-color: var(--color-active-state); /* Even darker color when active */
+}
+body.dark .cta-button:active { background-color: var(--color-active-state); } /* Even darker on active in dark mode */
+
+.about-section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+.about-section h2 {
+    font-size: 2rem;
+    color: var(--color-text-primary); /* Heading color */
+    margin-bottom: 20px;
+}
+body.dark .about-section h2 { color: var(--color-primary-accent); } /* Adjust heading color in dark mode */
+.about-section p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-text-primary); /* Standard text color */
+}
+body.dark .about-section p { color: var(--color-text-primary); } /* Adjust text color in dark mode */
+
+/* Added RGB variables for use in rgba() */
+:root {
+    --palette-light-gray-taupe-rgb: 202, 190, 188; /* RGB for #cabebc */
+}
