@@ -12,7 +12,7 @@ import Image from 'next/image'; // Import the Image component for optimized imag
 // };
 
 
-// Gallery Page Component - Now fetches data from Strapi
+// Gallery Page Component - Now fetches data from Strapi, handles click-to-detail, and fade-in animation
 const GalleryPage = () => {
   // State to store the fetched artwork entries from Strapi
   const [artworkEntries, setArtworkEntries] = useState([]);
@@ -20,8 +20,10 @@ const GalleryPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   // State to manage potential errors
   const [error, setError] = useState(null);
+  // --- New State for Selected Artwork ---
+  const [selectedArtwork, setSelectedArtwork] = useState(null); // State to hold the artwork object that is currently selected/clicked
 
-  // useEffect hook to fetch data from Strapi when the component mounts
+  // --- useEffect Hook for Data Fetching ---
   useEffect(() => {
     // Function to fetch data from your local Strapi API
     const getArtwork = async () => {
@@ -51,8 +53,8 @@ const GalleryPage = () => {
         }
 
 
-        // --- ADJUSTED MAPPING LOGIC ---
-        // Based on console log, fields like title, description, image are directly on the item
+        // --- ADJUSTED MAPPING LOGIC (Based on console logs) ---
+        // Access fields like title, description, image directly from the item
         // The image URL is nested under item.image.url
         const fetchedArtwork = data.data.map((item, index) => {
              // Log the item structure being processed
@@ -97,11 +99,66 @@ const GalleryPage = () => {
     // Call the data fetching function
     getArtwork();
 
-    // Note: We are not including the fade-in animation logic in this file yet,
-    // as the focus is on data fetching. We can add it back later if needed,
-    // potentially in a separate component or by adapting the useEffect.
+    // This useEffect is only for data fetching, fade-in JS is in a separate useEffect below
 
   }, []); // Empty dependency array means this effect runs only once after the initial render
+
+
+  // --- New useEffect Hook for Fade-in Animation ---
+  // This effect runs after the component renders and artworkEntries are updated
+  useEffect(() => {
+      // Only run this effect if there are artwork entries to display
+      if (artworkEntries.length > 0) {
+          // Select all elements with the 'fade-in' class within this page
+          // Use a small delay to ensure elements are in the DOM after artworkEntries update
+          const observerTimeout = setTimeout(() => {
+              const elementsToAnimate = document.querySelectorAll('.gallery-item.fade-in'); // Target gallery items with fade-in class
+
+              // Create a new IntersectionObserver instance
+              const observer = new IntersectionObserver((entries, observer) => {
+                  entries.forEach(entry => {
+                      // If the element is intersecting (visible in the viewport)
+                      if (entry.isIntersecting) {
+                          // Add the 'is-visible' class to trigger the CSS animation
+                          entry.target.classList.add('is-visible');
+                          // Stop observing the element after it has animated
+                          observer.unobserve(entry.target);
+                      }
+                  });
+              }, {
+                  // Options for the observer (optional)
+                  threshold: 0.1 // Percentage of the target element which should be visible to trigger the callback
+              });
+
+              // Loop over the selected elements and start observing each one
+              elementsToAnimate.forEach(element => {
+                  observer.observe(element);
+              });
+
+              // Cleanup function for the observer
+              // Disconnect the observer when the component unmounts or dependencies change
+              return () => {
+                  observer.disconnect();
+              };
+
+          }, 100); // Small delay to ensure elements are rendered after state update
+
+          // Cleanup function for the timeout
+          return () => clearTimeout(observerTimeout);
+      }
+      // This effect depends on artworkEntries, so it reruns when artworkEntries changes
+  }, [artworkEntries]); // Dependency array includes artworkEntries
+
+
+  // --- New Function to Handle Artwork Click ---
+  const handleArtworkClick = (artwork) => {
+    setSelectedArtwork(artwork); // Set the state to the clicked artwork
+  };
+
+  // --- New Function to Close Detail View ---
+  const handleCloseDetail = () => {
+    setSelectedArtwork(null); // Set state back to null to close detail view
+  };
 
 
   // --- Render Logic ---
@@ -140,15 +197,24 @@ const GalleryPage = () => {
   return (
     <section className="gallery-section"> {/* Use a class for styling the section */}
       <h2>Gallery</h2>
-      <p>Browse through a selection of Surita Bouwer's artwork below.</p> {/* Updated text */}
+      {/* Removed "managed by Strapi" text */}
+      <p>Browse through a selection of Surita Bouwer's artwork below.</p>
 
-      {/* Gallery Grid */}
+      {/* --- Gallery Grid (Always visible) --- */}
       <div className="gallery-grid"> {/* Use a class for styling the grid */}
         {/* Map over the fetched entries and display each artwork */}
         {artworkEntries.map(item => (
             // Use a class for styling each gallery item
-            // You can add fade-in class here later if you re-implement animation
-            <div key={item.id} className="gallery-item">
+            // Added onClick handler to open detail view
+            // Added fade-in class here to the gallery item
+            <div
+                key={item.id}
+                className="gallery-item fade-in" // Added fade-in class
+                onClick={() => handleArtworkClick(item)} // Call handler with the item data
+                role="button" // Indicate that this div is clickable
+                tabIndex={0} // Make it focusable for keyboard navigation
+                aria-label={`View details for ${item.title || 'Untitled Artwork'}`} // Accessibility label
+            >
               {/* Use Next.js Image component for optimized image rendering */}
               {/* Ensure your Strapi server is running locally for images to load */}
               {/* Prepend Strapi base URL for local images */}
@@ -157,7 +223,7 @@ const GalleryPage = () => {
                  <Image
                    src={`http://localhost:1337${item.imageUrl}`} // Prepend Strapi base URL for local images
                    alt={item.imageAlt} // Use the alt text from Strapi or default
-                   className="gallery-image" // Apply your CSS class
+                   className="gallery-image" // Apply your CSS class (will need sizing adjustments in CSS)
                    width={item.imageWidth || 400} // Use actual width if available, otherwise provide a default
                    height={item.imageHeight || 300} // Use actual height if available, otherwise provide a default
                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Responsive sizing
@@ -168,17 +234,58 @@ const GalleryPage = () => {
                  <div className="gallery-image-placeholder">No Image</div>
               )}
 
-              <h3 className="artwork-title">{item.title || 'Untitled'}</h3> {/* Use title or default */}
-              {/* Display other fields from Strapi */}
-              {item.size && <p>{item.size}</p>}
-              {item.price && <p>${item.price}</p>} {/* Example formatting for price */}
-              {item.yearCreated && <p>Year: {item.yearCreated}</p>}
-              {/* Description can be added here if you want to display it in the grid */}
-              {/* {item.description && <p>{item.description}</p>} */}
+              {/* Display only the title in the grid item */}
+              <h3 className="artwork-title">{item.title || 'Untitled'}</h3> {/* Use a class for styling title */}
+              {/* Removed description, size, price, year from grid item */}
             </div>
           )
         )}
       </div>
+
+      {/* --- Artwork Detail View (Conditionally rendered) --- */}
+      {/* Check if an artwork is selected */}
+      {selectedArtwork && (
+        // Use a div for the detail view container (will need styling)
+        // Added a class for the content container within the modal
+        <div className="artwork-detail-view">
+            <div className="detail-content-container"> {/* New container for content */}
+                {/* Button to close the detail view */}
+                <button className="close-detail-button" onClick={handleCloseDetail}>
+                  &times; {/* Use a times symbol or an icon */}
+                </button>
+
+                {/* Display the full image in the detail view */}
+                 {selectedArtwork.imageUrl ? (
+                       <Image
+                         src={`http://localhost:1337${selectedArtwork.imageUrl}`} // Use the same URL logic
+                         alt={selectedArtwork.imageAlt} // Use the alt text
+                         className="detail-image" // Use a different class for detail image styling
+                         width={selectedArtwork.imageWidth || 800} // Provide larger default width for detail
+                         height={selectedArtwork.imageHeight || 600} // Provide larger default height for detail
+                         sizes="100vw" // Detail image is likely full width on smaller screens
+                         priority={false} // Not above the fold initially
+                       />
+                    ) : (
+                       // Placeholder if image URL is missing
+                       <div className="detail-image-placeholder">No Image</div>
+                    )}
+
+                {/* Display all the artwork details */}
+                {/* Added a wrapper div for text content in detail view */}
+                <div className="detail-text-content"> {/* New container for text */}
+                    <h3 className="detail-title">{selectedArtwork.title || 'Untitled'}</h3>
+                    {selectedArtwork.description && <p className="detail-description">{selectedArtwork.description}</p>}
+                    {selectedArtwork.size && <p className="detail-size">Size: {selectedArtwork.size}</p>}
+                    {/* Changed currency symbol from $ to ZAR */}
+                    {selectedArtwork.price && <p className="detail-price">Price: ZAR {selectedArtwork.price}</p>} {/* Changed $ to ZAR */}
+                    {selectedArtwork.yearCreated && <p className="detail-year">Year: {selectedArtwork.yearCreated}</p>}
+                    {/* Add more details here as needed */}
+                </div>
+
+            </div>
+        </div>
+      )}
+
 
       {/* Add more content or sections for the gallery page if needed */}
     </section>

@@ -187,7 +187,8 @@ a:active {
 .hamburger-line {
     width: 100%;
     height: 3px;
-    background-color: var(--color-text-primary); /* Color of the hamburger lines */
+    /* Changed color to a different palette variable */
+    background-color: var(--color-primary-accent); /* Color of the hamburger lines */
     border-radius: 10px;
     transition: all 0.3s linear;
     position: relative;
@@ -230,27 +231,40 @@ a:active {
 /* --- Media Query for Mobile Styles --- */
 @media (max-width: 768px) {
     .site-nav { justify-content: space-between; }
-    .site-nav .logo { margin-right: 0; }
-    .menu-toggle { display: flex; }
-    .nav-links {
-        position: absolute;
-        right: 0;
-        top: 60px;
-        height: calc(100vh - 60px);
-        width: 70%;
-        background-color: var(--color-background-primary); /* Background for the mobile menu */
-        flex-direction: column;
-        align-items: center;
-        padding: 20px;
-        box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-        transform: translateX(100%);
-        transition: transform 0.3s ease-in-out;
+     .site-nav .logo { margin-right: 0; }
+
+     /* Added z-index to header to ensure it's above main content */
+     .site-header {
+     z-index: 20; /* Ensure header is above other page content */
+     }
+
+     .menu-toggle {
+     display: flex;
+     /* z-index: 10; is already defined and is fine */
+     }
+
+     .nav-links {
+     position: absolute;
+     right: 0;
+     top: 60px; /* Needs to be based on actual header height */
+     height: calc(100vh - 60px); /* Needs to be based on actual header height */
+     width: 70%;
+     background-color: var(--color-background-primary); /* Background for the mobile menu */
+     flex-direction: column;
+     align-items: center;
+     padding: 20px;
+     box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+     transform: translateX(100%);
+     transition: transform 0.3s ease-in-out;
+     /* Added z-index to ensure the menu is above content when open */
+     z-index: 100; /* Needs to be higher than any overlapping content */
     }
     .nav-links.open { transform: translateX(0); }
     .nav-links li { margin: 15px 0; }
     .nav-links a { font-size: 1.2rem; }
     .nav-links a::after { bottom: -2px; }
 }
+/* --- End Mobile Menu Styling --- */
 
 .site-main {
   max-width: 1200px;
@@ -550,8 +564,8 @@ body.dark .hero-content .tagline { color: var(--color-text-secondary); } /* Adju
     transition: background-color 0.3s ease, transform 0.1s ease;
 }
 body.dark .cta-button {
-       background-color: var(--color-secondary-accent); /* Adjust button color in dark mode */
-       color: var(--color-text-primary);
+        background-color: var(--color-secondary-accent); /* Adjust button color in dark mode */
+        color: var(--color-text-primary);
 }
 .cta-button:hover { background-color: var(--color-secondary-accent); } /* Accent on hover */
 body.dark .cta-button:hover { background-color: var(--color-primary-accent); } /* Darker accent on hover in dark mode */
@@ -560,7 +574,6 @@ body.dark .cta-button:hover { background-color: var(--color-primary-accent); } /
     background-color: var(--color-active-state); /* Even darker color when active */
 }
 body.dark .cta-button:active { background-color: var(--color-active-state); } /* Even darker on active in dark mode */
-
 .about-section {
     max-width: 800px;
     margin: 40px auto;
@@ -583,4 +596,130 @@ body.dark .about-section p { color: var(--color-text-primary); } /* Adjust text 
 /* Added RGB variables for use in rgba() */
 :root {
     --palette-light-gray-taupe-rgb: 202, 190, 188; /* RGB for #cabebc */
+}
+
+/* --- Gallery Detail View (Modal/Lightbox) Styling --- */
+.artwork-detail-view {
+    /* Position fixed to cover the entire viewport */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Semi-transparent background to dim the content behind */
+    background-color: rgba(0, 0, 0, 0.8); /* Dark overlay */
+    /* Use flexbox to center the content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Ensure it's on top of everything else */
+    z-index: 1000;
+    /* Allow scrolling if content overflows */
+    overflow-y: auto;
+    /* Smooth transition for appearance */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Class added by JS when artwork is selected */
+/* Note: The JS in page.js currently just renders the div,
+   it doesn't add a separate class for the 'open' state.
+   The visibility/opacity transition above applies as soon as the div is rendered.
+   If you want to control the transition with a class, you'd modify the JS
+   to add/remove a class like 'is-open' and apply the opacity/visibility
+   styles to '.artwork-detail-view.is-open'.
+   For now, the current structure works with the styles above.
+*/
+.artwork-detail-view {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+.detail-content-container {
+    /* Style for the container holding the image and text */
+    background-color: var(--color-background-primary); /* Use theme background */
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 90%; /* Max width for the modal content */
+    max-height: 90vh; /* Max height to prevent overflow */
+    overflow-y: auto; /* Enable scrolling within the modal content if needed */
+    position: relative; /* Needed for absolute positioning of the close button */
+    display: flex;
+    flex-direction: column; /* Stack image and text vertically */
+    align-items: center; /* Center content horizontally */
+}
+
+body.dark .detail-content-container {
+    background-color: var(--color-background-primary); /* Dark mode background */
+}
+
+.close-detail-button {
+    /* Style for the close button (X) */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-text-primary); /* Use theme text color */
+    z-index: 10; /* Ensure it's above the content */
+    transition: color 0.2s ease;
+}
+
+body.dark .close-detail-button {
+    color: var(--color-text-primary); /* Dark mode text color */
+}
+
+.close-detail-button:hover {
+    color: var(--color-primary-accent); /* Accent color on hover */
+}
+
+.detail-image {
+    /* Styling for the larger image in the detail view */
+    max-width: 100%; /* Ensure image fits within the container */
+    max-height: 70vh; /* Limit image height to leave space for text */
+    height: auto;
+    display: block;
+    margin-bottom: 20px; /* Space between image and text */
+    object-fit: contain; /* Ensure the entire image is visible */
+}
+
+.detail-text-content {
+    /* Styling for the text details container */
+    text-align: center; /* Center the text */
+    color: var(--color-text-primary); /* Use theme text color */
+}
+
+body.dark .detail-text-content {
+    color: var(--color-text-primary); /* Dark mode text color */
+}
+
+.detail-title {
+    font-size: 1.8rem;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--color-text-primary); /* Use theme text color */
+}
+
+body.dark .detail-title {
+    color: var(--color-primary-accent); /* Accent color in dark mode */
+}
+
+.detail-description,
+.detail-size,
+.detail-price,
+.detail-year {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: var(--color-text-primary); /* Use theme text color */
+}
+
+body.dark .detail-description,
+body.dark .detail-size,
+body.dark .detail-price,
+body.dark .detail-year {
+    color: var(--color-text-primary); /* Dark mode text color */
 }
